@@ -1,0 +1,91 @@
+<div class="pb-4">
+
+  <!-- HEADER -->
+  <div class="bg-green-600 text-white p-6 rounded-b-3xl shadow-lg">
+
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-2xl mb-1">WayScout</h1>
+        <p class="text-green-100 text-sm">Alertas en tu ruta</p>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="grid grid-cols-3 gap-3 mt-6">
+
+      <div class="bg-green-500 rounded-lg p-3 text-center">
+        <span class="text-2xl">12</span>
+        <p class="text-xs text-green-100">Activas hoy</p>
+      </div>
+
+      <div class="bg-green-500 rounded-lg p-3 text-center">
+        <span class="text-2xl">3</span>
+        <p class="text-xs text-green-100">En tu área</p>
+      </div>
+
+      <div class="bg-green-500 rounded-lg p-3 text-center">
+        <span class="text-2xl">8</span>
+        <p class="text-xs text-green-100">Verificadas</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FILTERS -->
+
+  <div class="px-4 py-4 flex gap-2">
+
+    <button (click)="setFilter('all')">
+      Todas
+    </button>
+
+    <button (click)="setFilter('deslave')">
+      Deslaves
+    </button>
+
+    <button (click)="setFilter('trafico')">
+      Tráfico
+    </button>
+
+    <button (click)="setFilter('clima')">
+      Clima
+    </button>
+
+  </div>
+
+  <!-- EVENTS -->
+
+  <div class="px-4 space-y-3">
+
+    <div
+      *ngFor="let event of filteredEvents"
+      (click)="navigateToEvent(event.id)"
+      class="bg-white rounded-xl shadow-md p-4 border cursor-pointer"
+    >
+
+      <h3>{{event.title}}</h3>
+
+      <p>{{event.location}}</p>
+
+      <p>{{event.description}}</p>
+
+      <div>
+
+        <span>{{event.time}}</span>
+
+        <span>👍 {{event.votes.up}}</span>
+
+        <span>👎 {{event.votes.down}}</span>
+
+        <span *ngIf="event.verified">
+          ✓ Verificado
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
