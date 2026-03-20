@@ -1,0 +1,51 @@
+name: CI/CD deploy master
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["release"]
+
+jobs:
+  ci_cd_deploy_master:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular (production)
+        run: npm run build -- --configuration production
+
+      - name: Verify build output
+        run: ls -la dist/wayscout/browser
+
+      - name: Create Dockerfile for static site
+        run: |
+          cat > Dockerfile.ci <<'EOF'
+          FROM httpd:2.4-alpine
+          COPY dist/wayscout/browser/ /usr/local/apache2/htdocs/
+          EOF
+
+      - name: Build Docker image
+        run: docker build -f Dockerfile.ci -t ${{ secrets.DOCKER_USER }}/${{ secrets.MODEL_NAME2 }}:${{ github.sha }} .
+
+      - name: Docker login
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+
+      - name: Push Docker image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: docker push ${{ secrets.DOCKER_USER }}/${{ secrets.MODEL_NAME2 }}:${{ github.sha }}
