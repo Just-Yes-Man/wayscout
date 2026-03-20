@@ -6,6 +6,18 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
+## PWA installation checklist
+
+If the browser does not show the install prompt, check these points:
+
+1. `ng serve` uses the **development** configuration and the Service Worker is disabled there.
+2. Build with production settings: `ng build --configuration production`.
+3. Serve the build output (`dist/wayscout/browser`) from `http://localhost` or HTTPS.
+4. Open DevTools → **Application** and verify:
+   - Manifest is valid.
+   - Service Worker is active.
+   - No installability errors are shown.
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
